@@ -11,6 +11,9 @@ Please follow this link below to set up the VM of Linux Ubuntu on Amazon AWS. Th
 ### Step2. Configure the environment on VM
 
 1.Using ssh to enter the amazon instance. Here we use Linux Ubuntu instance.
+```
+ssh -i myKeyPair.pem ubuntu@your-EC2-instance-public-IP
+```
 2.install git on VM. 
 ```
 sudo apt-get install git
