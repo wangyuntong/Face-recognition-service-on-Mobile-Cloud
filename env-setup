@@ -1,0 +1,3 @@
+## Configure the environment
+1. Using ssh to enter the amazon instance. Here we use Linux Ubuntu instance.
+2. install git on VM.
