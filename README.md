@@ -2,12 +2,12 @@
 
 ## Cloud Part Step by Step
 
-## Step1. Set up a virtual machine.
+### Step1. Set up a virtual machine.
 
 Please follow this link below to set up the VM of Linux Ubuntu on Amazon AWS. The goal is to use this VM to run CNN model and detect faces. 
 [AWS EC2 Get Started](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html)
 
-## Step2. Configure the environment on VM
+### Step2. Configure the environment on VM
 
 1.Using ssh to enter the amazon instance. Here we use Linux Ubuntu instance.
 2.install git on VM. 
