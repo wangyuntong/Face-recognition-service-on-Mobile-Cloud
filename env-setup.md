@@ -15,7 +15,13 @@ git clone https://github.com/torch/distro.git ~/torch --recursive
 cd ~/torch; bash install-deps;
 ./install.sh
 ```
-5.Install CUDA
+5.Install CUDA. 
+```
+cd env
+sudo dpkg -i cuda-repo-ubuntu1504_7.5-18_amd64.deb
+sudo apt-get update
+sudo apt-get install cuda
+```
 6.Install package used in the lua script.
 ```
 luarocks install image
