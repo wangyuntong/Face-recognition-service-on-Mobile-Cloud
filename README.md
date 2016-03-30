@@ -28,6 +28,16 @@ git clone https://github.com/torch/distro.git ~/torch --recursive
 cd ~/torch; bash install-deps;
 ./install.sh
 ```
+And configure torch environment PATH:
+The script adds torch to your PATH variable. You just have to source it once to refresh your env variables. The installation script will detect what is your current shell and modify the path in the correct configuration file.
+```
+# On Linux with bash
+source ~/.bashrc
+# On Linux with zsh
+source ~/.zshrc
+# On OSX or in Linux with none of the above.
+source ~/.profile
+```
 5.Install CUDA. 
 ```
 cd env
