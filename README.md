@@ -51,3 +51,7 @@ luarocks install image
 luarocks install nngraph
 luarocks install cunn
 ```
+7. Upload ```facedet.nn``` to Amazon EC2 using scp:
+```
+scp -i ~/.ssh/AmazonRSA/yuntong_keypair.pem facedet.nn ubuntu@52.90.105.72:/home/ubuntu/Face-recognition-service-on-Mobile-Cloud
+```
