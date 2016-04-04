@@ -8,6 +8,8 @@ Please follow this link below to set up the VM of Linux Ubuntu on Amazon AWS. Th
 
 [AWS EC2 Get Started](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html)
 
+Here I uses the AMI that our course Neural Networks and Deep Learning provided, named E6040 in public AMI. And the storage should be larger than 10 GB.
+
 ### Step2. Configure the environment on VM
 
 1.Using ssh to enter the amazon instance. Here we use Linux Ubuntu instance.
