@@ -40,7 +40,7 @@ source ~/.zshrc
 # On OSX or in Linux with none of the above.
 source ~/.profile
 ```
-5.Install CUDA. 
+5.Install CUDA. (only do this when you're working with CUDA)
 ```
 cd env
 sudo dpkg -i cuda-repo-ubuntu1504_7.5-18_amd64.deb
@@ -51,9 +51,13 @@ sudo apt-get install cuda
 ```
 luarocks install image
 luarocks install nngraph
+luarocks install sys
+```
+If you're configuring with CUDA, you should also install 'cunn' package:
+```
 luarocks install cunn
 ```
-7.Upload ```facedet.nn``` to Amazon EC2 using scp:
+7.Upload model ```facedet.nn``` (with CUDA) or ```facedet_nocuda_double.nn``` (without CUDA) and FDDB database (for test) to Amazon EC2 using scp:
 ```
 scp -i ~/.ssh/AmazonRSA/yuntong_keypair.pem facedet.nn ubuntu@52.90.105.72:/home/ubuntu/Face-recognition-service-on-Mobile-Cloud
 ```
