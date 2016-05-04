@@ -6,19 +6,19 @@ require 'image'
 local detThresh = torch.log(0.40)
 local nmsThresh = 0.3
 local scaleDownF = 0.8
-
+local path = '/home/ubuntu/Face-recognition-service-on-Mobile-Cloud'
 --model config
 local numDet = 14 --number of detectors
 local rfW = {12,16,20,24,28,32,36,40,44,48,52,56,60,64} --RFs
 local skp = {1,1,1,1,2,2,2,2,2,2,2,4,4,4} --skip vals
-local nnF = './facedet.nn'
+local nnF = path .. '/facedet.nn'
 
 --FDDB images
 local maxW   = 240
 local minW   = 68
-local dataPx = './FDDB/FDDB-folds/FDDB-fold-'
+local dataPx = path .. '/FDDB/FDDB-folds/FDDB-fold-'
 local numFld = 10
-local imgSrc = './FDDB/'
+local imgSrc = path .. '/FDDB/'
 
 --put net in 'global' space in this script
 local net   = torch.load(nnF)
@@ -171,69 +171,5 @@ function findFaces (imgG, scale, detT)
     end
     
     return table.getn(detT)
-
-end
-
--- for fold=1,numFld do
-local numImgProc=0
-for fold=1,2 do
-
-    local dataF = dataPx .. string.format('%02d',fold) .. '.txt'
-    local line= ''
-    for line in io.lines(dataF) do
-
-        line = string.gsub(line,'\n','')
-        line = string.gsub(line,'\r','')
-
-	local imgF = imgSrc .. line .. '.jpg'
-        local img = image.load(imgF)
-
-        local imgG = img
-	if (img:size(1) < 3) then
-	    imgG = torch.Tensor(3,imgG:size(2),imgG:size(3))
-	    imgG[{{1},{},{}}] = img[{{1},{},{}}]
-	    imgG[{{2},{},{}}] = img[{{1},{},{}}]
-	    imgG[{{3},{},{}}] = img[{{1},{},{}}]
-	end
-
-	--check imgG shape is ok
-	local maxDim = imgG:size(2)
-        local minDim = -1
-	if (imgG:size(3) > maxDim) then
-	    minDim = maxDim
-	    maxDim = imgG:size(3)
-	else
-	    minDim = imgG:size(3)
-	end
-	
-	local scale = (maxW / maxDim)
-	if ( scale > 1.0 ) then
-	    scale = 1.0
-	end
-
-	local detT = {}
-	local detN = 0
-	while ( minDim*scale >= minW ) do
-	    detN = findFaces(imgG, scale, detT)
-	    scale = scale * scaleDownF
-	end
-	
-	--run NMS once again to remove duplicates introduced at various scales
-	local detTT = torch.Tensor(detT)
-	local nmsT = NMS(detTT, nmsThresh)
-	local nDet = table.getn(nmsT)
-
-	io.write( line .. '\n' )
-	io.write( nDet .. '\n' )
-	for dd in pairs(nmsT) do
-	    local thisidx = nmsT[dd]
-	    io.write( detTT[thisidx][1] .. ' ' .. detTT[thisidx][2] .. ' ' .. detTT[thisidx][3] .. ' ')
-	    io.write( detTT[thisidx][4] .. ' ' .. detTT[thisidx][5] .. '\n')
-	end
-	io.flush()
-
-	numImgProc = numImgProc + 1
-
-    end
 
 end

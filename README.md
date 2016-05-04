@@ -8,8 +8,6 @@ Please follow this link below to set up the VM of Linux Ubuntu on Amazon AWS. Th
 
 [AWS EC2 Get Started](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html)
 
-Here I uses the AMI that our course Neural Networks and Deep Learning provided, named E6040 in public AMI. And the storage should be larger than 10 GB.
-
 ### Step2. Configure the environment on VM
 
 1.Using ssh to enter the amazon instance. Here we use Linux Ubuntu instance.
@@ -40,7 +38,7 @@ source ~/.zshrc
 # On OSX or in Linux with none of the above.
 source ~/.profile
 ```
-5.Install CUDA. (only do this when you're working with CUDA)
+5.Install CUDA. 
 ```
 cd env
 sudo dpkg -i cuda-repo-ubuntu1504_7.5-18_amd64.deb
@@ -51,13 +49,5 @@ sudo apt-get install cuda
 ```
 luarocks install image
 luarocks install nngraph
-luarocks install sys
-```
-If you're configuring with CUDA, you should also install 'cunn' package:
-```
 luarocks install cunn
-```
-7.Upload model ```facedet.nn``` (with CUDA) or ```facedet_nocuda_double.nn``` (without CUDA) and FDDB database (for test) to Amazon EC2 using scp:
-```
-scp -i ~/.ssh/AmazonRSA/yuntong_keypair.pem facedet.nn ubuntu@52.90.105.72:/home/ubuntu/Face-recognition-service-on-Mobile-Cloud
 ```

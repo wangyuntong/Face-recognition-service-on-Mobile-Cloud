@@ -1,0 +1,5 @@
+# model (too large to upload)
+*.nn
+
+# dataset
+FDDB/
