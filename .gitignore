@@ -1,5 +1,14 @@
 # model (too large to upload)
-*.nn
+facedet.nn
+facedet_nocuda_double.nn
 
 # dataset
 FDDB/
+.DS_Store
+
+# idea project
+js/.idea/
+.idea/
+
+
+
