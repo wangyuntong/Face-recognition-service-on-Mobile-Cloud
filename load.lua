@@ -15,3 +15,5 @@ local nnF = path .. '/facedet.nn'
 local net   = torch.load(nnF)
 net   = net:cuda()
 
+io.write('Load model complete!\n')
+io.flush()

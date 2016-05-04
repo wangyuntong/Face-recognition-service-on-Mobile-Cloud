@@ -207,7 +207,6 @@ local detTT = torch.Tensor(detT)
 local nmsT = NMS(detTT, nmsThresh)
 local nDet = table.getn(nmsT)
 
-io.write(line .. '\n')
 io.write(nDet .. '\n')
 for dd in pairs(nmsT) do
     local thisidx = nmsT[dd]
