@@ -8,14 +8,15 @@ var spawn = require('child_process').spawn
 var fs = require('fs')
 
 execPath = '/home/ubuntu/torch/install/bin/th'
-// execPath = '/Users/yuntongwang/torch/install/bin/th'
 runScriptName = '../run.lua'
 loadScriptName = '../load.lua'
 
+// Load CNN model and raise handlers
+console.log('Loading the CNN model...')
 const luaScript = spawn(execPath, [loadScriptName]);
 
 luaScript.stdout.on('data', function (data) {
-    console.log('stdout: ' + data);
+    console.log(data);
 });
 
 luaScript.stderr.on('data', function (data) {
@@ -23,74 +24,68 @@ luaScript.stderr.on('data', function (data) {
 });
 
 luaScript.on('close', function (code) {
-    console.log('Load model child process exited with code ' + code);
+    console.log('Load model succeed!');
 });
 
-var server = http.createServer(function(request, response) {
+// Create an HTTP server, handle HTTP request from mobile
+var server = http.createServer(function (request, response) {
     console.log("Processing incoming image...");
-    var imagedata = []
     var headers = request.headers;
     var method = request.method;
     var url = request.url;
+    
+    // Write the image to current image file
+    // so that lua script could read the image and process
+    var f = fs.createWriteStream('../image/currentImage.jpg');
 
-    request.on('error', function(err) {
+    request.on('error', function (err) {
         console.error(err);
-    }).on('data', function(chunk) {
-        imagedata.push(chunk);
-    }).on('end', function() {
+    }).on('data', function (chunk) {
+        f.write(chunk);
+    }).on('end', function () {
 
-        // Write the image to current image file
-        var FRresult = [];
-        fs.writeFile('../image/currentImage.jpg', imagedata, 'binary', function(err){
-            if (err) {
-                return console.error(err);
-            }
-            console.log('File saved in ../image/currentImage.jpg')
-            const luaRunScript = spawn(execPath, [runScriptName]);
+        var FRresult = '';
+        f.end();
+        // Image filie saved successfully!
+        console.log('File saved in ../image/currentImage.jpg')
 
-            luaRunScript.stdout.on('data', function (data) {
-                console.log('stdout: ' + data);
-                FRresult.push(data)
-                
-                response.on('error', function(err) {
-                    console.error(err);
-                });
+        // Call another lua script child process to run model on current image
+        const luaRunScript = spawn(execPath, [runScriptName]);
 
-                response.statusCode = 200;
-                response.setHeader('Content-Type', 'application/json');
-                // Note: the 2 lines above could be replaced with this next one:
-                // response.writeHead(200, {'imageID': imgID})
+        luaRunScript.stdout.on('data', function (data) {
+            console.log('Face detection result from lua child process: \n' + data);
+            FRresult += data;
 
-                var responseBody = {
-                  headers: headers,
-                  method: method,
-                  url: url,
-                  body: FRresult
-                };
-
-                response.write(JSON.stringify(responseBody));
-                response.end();
-                console.log("reponse sent back to mobile ... ");
-                // Note: the 2 lines above could be replaced with this next one:
-                // response.end(JSON.stringify(responseBody))
-
-                // END OF NEW STUFF
+            response.on('error', function (err) {
+                console.error(err);
             });
 
-            luaRunScript.stderr.on('data', function (data) {
-                console.log('stderr: ' + data);
-            });
+            response.statusCode = 200;
+            response.setHeader('Content-Type', 'application/json');
 
-            luaRunScript.on('close', function (code) {
-                console.log('child process exited with code ' + code);
-            });
+            var responseBody = {
+                headers: headers,
+                method: method,
+                url: url,
+                body: FRresult
+            };
 
-        })
+            response.end(JSON.stringify(responseBody));
+            console.log("reponse sent back to mobile ... ");
+        });
 
-    });
+        luaRunScript.stderr.on('data', function (data) {
+            console.log('stderr: ' + data);
+        });
+
+        luaRunScript.on('close', function (code) {
+            console.log('HTTP response sent succeed!');
+        });
+
+    })
+
 });
-
-// server listen on port 8080
+// server listen on port 80
 port = '80'
 server.listen(port)
 

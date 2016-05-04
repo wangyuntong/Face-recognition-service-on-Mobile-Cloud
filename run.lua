@@ -122,52 +122,52 @@ function NMS(boxT, overlapT)
     --integer data type
     return retT
 end
---
---function findFaces(imgG, scale, detT)
---
---    local newH = math.ceil(imgG:size(2) * scale)
---    local newW = math.ceil(imgG:size(3) * scale)
---    local imgS = image.scale(imgG, newW, newH)
---
---    imgS:add(-0.5)
---
---    imgS = imgS:double()
---    imgS = imgS:cuda()
---
---    local prediction = net:forward(imgS)
---
---    --detected faces
---    for dl = 1, numDet do
---
---        local tP = prediction[dl][{ { 1 }, {}, {} }]
---        local tN = prediction[dl][{ { 2 }, {}, {} }]
---        local tD = tP - tN
---        local logZ = tN + torch.log1p(torch.exp(tD))
---
---        --log prob
---        tP = tP - logZ
---
---        local hVal = math.ceil(rfW[dl] / scale)
---
---        local numR = tP:size(2)
---        local numC = tP:size(3)
---
---        local ix = 0
---        local iy = 0
---        tP:apply(function(x)
---            ix = ix % numC + 1
---            if (ix == 1) then iy = iy + 1 end
---            if (x > detThresh) then
---                xVal = math.ceil(((ix - 1) * skp[dl] + 1) / scale)
---                yVal = math.ceil(((iy - 1) * skp[dl] + 1) / scale)
---                table.insert(detT, { xVal, yVal, hVal, hVal, x })
---            end
---            return x
---        end)
---    end
---
---    return table.getn(detT)
---end
+
+function findFaces(imgG, scale, detT)
+
+   local newH = math.ceil(imgG:size(2) * scale)
+   local newW = math.ceil(imgG:size(3) * scale)
+   local imgS = image.scale(imgG, newW, newH)
+
+   imgS:add(-0.5)
+
+   imgS = imgS:double()
+   imgS = imgS:cuda()
+
+   local prediction = net:forward(imgS)
+
+   --detected faces
+   for dl = 1, numDet do
+
+       local tP = prediction[dl][{ { 1 }, {}, {} }]
+       local tN = prediction[dl][{ { 2 }, {}, {} }]
+       local tD = tP - tN
+       local logZ = tN + torch.log1p(torch.exp(tD))
+
+       --log prob
+       tP = tP - logZ
+
+       local hVal = math.ceil(rfW[dl] / scale)
+
+       local numR = tP:size(2)
+       local numC = tP:size(3)
+
+       local ix = 0
+       local iy = 0
+       tP:apply(function(x)
+           ix = ix % numC + 1
+           if (ix == 1) then iy = iy + 1 end
+           if (x > detThresh) then
+               xVal = math.ceil(((ix - 1) * skp[dl] + 1) / scale)
+               yVal = math.ceil(((iy - 1) * skp[dl] + 1) / scale)
+               table.insert(detT, { xVal, yVal, hVal, hVal, x })
+           end
+           return x
+       end)
+   end
+
+   return table.getn(detT)
+end
 
 local imgF = imgSrc .. 'currentImage.jpg'
 local img = image.load(imgF)
